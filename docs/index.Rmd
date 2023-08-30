@@ -5,9 +5,9 @@ date: "Aug-30-2023"
 output: html_notebook
 ---
 
-Read in Raw Data
+# Read in Raw Data
 
-```{r}
+```{r, echo=FALSE}
 library(readxl)
 
 dat = read_xlsx("/Users/calisun/Desktop/Zhan/Github/sales_pipeline_forecast/data/Sales Dataset.xlsx", sheet = "Sales Win Loss data")
@@ -17,66 +17,172 @@ cat("Size of dataset:\n")
 dim(dat)
 cat("\n")
 
-cat("Column list:\n")
-names(dat)
+cat("Example value of the columns:\n")
+str(dat)
 cat("\n")
 
-cat("Example values of the columns:\n")
-str(dat)
+library(dplyr)
+dat = rename(dat, 
+             "opportunity_id" = "Opportunity ID",
+             "technology_primary" = "Technology\r\nPrimary",
+             "city" = "City",
+             "b2b_sales_medium" = "B2B Sales Medium",
+             "sales_velocity" = "Sales Velocity",
+             "opportunity_status" = "Opportunity Status",
+             "sales_stage_iterations" = "Sales Stage Iterations",
+             "opportunity_size_usd" = "Opportunity Size (USD)",
+             "client_revenue_sizing" = "Client Revenue Sizing",
+             "client_employee_sizing" = "Client Employee Sizing",
+             "business_from_client_last_year" = "Business from Client Last Year",
+             "compete_intel" = "Compete Intel",
+             "opportunity_sizing" = "Opportunity Sizing")
+cat("Renamed column list:\n")
+names(dat)
 cat("\n")
 
 
 ```
 
-Examine data quality of each column:
+# Examine data quality of each column:
 
-```{r}
+### Opportunity ID
+```{r, echo=FALSE}
 library(dplyr)
-
 cat("Opportunity ID: No Duplicates\n")
 print("Count of Opty: ")
 nrow(dat)
 print("Count of Distinct Opty: ")
-n_distinct(dat$`Opportunity ID`)
+n_distinct(dat$opportunity_id)
 cat("\n")
+```
 
-cat("Technology Primary: \n")
+### Technology Primary
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("Technology Primary: 4 Levels. No Missing Value.\n")
+tab1(dat$technology_primary, sort.group = "decreasing")
 cat("\n")
+```
 
-cat("City: \n")
+### City
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("City: 7 Levels. No Missing Value.\n")
+tab1(dat$city, sort.group = "decreasing")
 cat("\n")
+```
 
-cat("B2B Sales Medium: \n")
+### B2B Sales Medium
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("B2B Sales Medium: 5 Levels. No Missing Value.\n")
+tab1(dat$b2b_sales_medium, sort.group = "decreasing")
 cat("\n")
+```
 
-cat("Sales Velocity: \n")
+### Sales Velocity
+```{r, echo=FALSE}
+library(ggplot2)
+cat("Sales Velocity: Average ~44 days; Majority <100 days. No Missing Value.\n")
+print("Count of missing value:")
+sum(is.na(dat$sales_velocity))
+ggplot(dat, aes(x = sales_velocity))+
+  geom_histogram(aes(y = ..density..), color = "black", fill = "white")+
+  geom_vline(aes(xintercept=mean(sales_velocity)), 
+             color = "blue", 
+             linetype = "dashed",
+             size = 1)+
+  geom_density(alpha = .4, fill = "#FF6666")+
+  scale_x_continuous(limits = c(0,200), breaks = seq(0,200,10))+
+  theme_bw()
+```
+
+### Opportunity Status
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("Opportunity Status: Overall won rate 22.6%. No Missing Value.\n")
+tab1(dat$opportunity_status, sort.group = "decreasing")
 cat("\n")
+```
 
-cat("Opportunity Status: \n")
+### Sales Stage Iterations
+```{r, echo=FALSE}
+library(ggplot2)
+cat("Sales Stage Iterations: Majority closed within 7 iterations. Average ~3. No Missing Value.\n")
+cat("Count of missing:\n")
+sum(is.na(dat$sales_stage_iterations))
+ggplot(dat, aes(x = sales_stage_iterations))+
+  geom_histogram(aes(y = ..density..), color = "black", fill = "white")+
+  geom_density(alpha = .4, fill = "#FF6666")+
+  geom_vline(aes(xintercept = mean(sales_stage_iterations)),
+             color = "blue",
+             linetype = "dashed",
+             size = 1)+
+  theme_bw()
 cat("\n")
+```
 
-cat("Sales Stage Iterations: \n")
+### Opportunity Sizing (USD)
+```{r, echo=FALSE}
+library(ggplot2)
+cat("Opportunity Size (USD): Majority deal size < $60,000. Average $30,000. No Missing Value.\n")
+cat("Count of missing:\n")
+sum(is.na(dat$opportunity_size_usd))
+ggplot(dat, aes(x = opportunity_size_usd))+
+  geom_histogram(aes(y = ..density..), color = "black", fill = "white")+
+  geom_density(alpha = .4, fill = "#FF6666")+
+  geom_vline(aes(xintercept = mean(opportunity_size_usd)),
+             color = "blue",
+             linetype = "dashed",
+             size = 1)+
+  theme_bw()+
+  scale_x_continuous(limits = c(0,150000), breaks = seq(0,150000, 30000))
 cat("\n")
+```
 
-cat("Opportunity Size (USD): \n")
+### Client Revenue Sizing
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("Client Revenue Sizing: Majority client revenue < 100K. No Missing Value.\n")
+tab1(dat$client_revenue_sizing)
 cat("\n")
+```
 
-cat("Client Revenue Sizing: \n")
+### Client Employee Sizing
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("Client Employee Sizing: Majority company size < 1K employees. No Missing Value.\n")
+tab1(dat$client_employee_sizing)
 cat("\n")
+```
 
-cat("Client Employee Sizing: \n")
+### Business From Client Last Year
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("Business From Client Last Year: Majority new clients. No Missing Value.\n")
+tab1(dat$business_from_client_last_year)
 cat("\n")
+```
 
-cat("Business From Client Last Year: \n")
+### Compete Intel
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("Compete Intel: Majority Unknown. No Missing Value.\n")
+tab1(dat$compete_intel)
 cat("\n")
+```
 
-cat("Compete Intel: \n")
+### Opportunity Sizing
+```{r, echo=FALSE}
+library(epiDisplay)
+cat("Opportunity Sizing: No Missing Value.\n")
+tab1(dat$opportunity_sizing)
 cat("\n")
+```
 
-cat("Opportunity Sizing: \n")
-cat("\n")
-
-print("Finding: There's no Closed Date - Create a random date column in next step.")
+### Finding
+```{r, echo=FALSE}
+print("There's no Closed Date, so cannot assess seasonality.")
 
 ```
 
