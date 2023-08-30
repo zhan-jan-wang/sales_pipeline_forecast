@@ -1,5 +1,46 @@
 ---
 title: "Sales Pipeline Forecast"
 author: "Zhan Wang"
+date: "Aug-30-2023"
 output: html_notebook
 ---
+
+Read in Raw Data
+
+```{r}
+library(readxl)
+
+dat = read_xlsx("/Users/calisun/Desktop/Zhan/Github/sales_pipeline_forecast/data/Sales Dataset.xlsx", sheet = "Sales Win Loss data")
+View(dat)
+
+cat("Size of dataset:\n")
+dim(dat)
+cat("\n")
+
+cat("Column list:\n")
+names(dat)
+cat("\n")
+
+cat("Example values of the columns:\n")
+str(dat)
+cat("\n")
+
+
+```
+
+Examine data quality of each column:
+
+```{r}
+library(dplyr)
+
+cat("Opportunity ID: No Duplicates\n")
+print("Count of Opty: ")
+nrow(dat)
+print("Count of Distinct Opty: ")
+n_distinct(dat$`Opportunity ID`)
+cat("\n")
+
+
+
+```
+
