@@ -40,7 +40,43 @@ print("Count of Distinct Opty: ")
 n_distinct(dat$`Opportunity ID`)
 cat("\n")
 
+cat("Technology Primary: \n")
+cat("\n")
 
+cat("City: \n")
+cat("\n")
+
+cat("B2B Sales Medium: \n")
+cat("\n")
+
+cat("Sales Velocity: \n")
+cat("\n")
+
+cat("Opportunity Status: \n")
+cat("\n")
+
+cat("Sales Stage Iterations: \n")
+cat("\n")
+
+cat("Opportunity Size (USD): \n")
+cat("\n")
+
+cat("Client Revenue Sizing: \n")
+cat("\n")
+
+cat("Client Employee Sizing: \n")
+cat("\n")
+
+cat("Business From Client Last Year: \n")
+cat("\n")
+
+cat("Compete Intel: \n")
+cat("\n")
+
+cat("Opportunity Sizing: \n")
+cat("\n")
+
+print("Finding: There's no Closed Date - Create a random date column in next step.")
 
 ```
 
